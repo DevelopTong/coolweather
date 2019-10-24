@@ -1,6 +1,7 @@
 package com.example.demo4;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,6 +106,14 @@ public class ChooseAreaFragment extends Fragment {
                     // 如果所选为市级，找到对应城市，执行查询该市所属县级信息
                     selectedCity = cityList.get(position);
                     queryCounties();
+                } else if (currentLevel == LEVEN_COUNTY) {
+                    // 如果所选为县级，找到对应县的天气Id并带值跳转
+                    String weatherId = countyList.get(position).getWeatherId();
+                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                    intent.putExtra("weather_id", weatherId);
+                    startActivity(intent);
+                    // 关闭当前activity
+                    getActivity().finish();
                 }
             }
         });
