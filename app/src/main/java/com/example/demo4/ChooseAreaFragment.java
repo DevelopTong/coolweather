@@ -107,13 +107,23 @@ public class ChooseAreaFragment extends Fragment {
                     selectedCity = cityList.get(position);
                     queryCounties();
                 } else if (currentLevel == LEVEN_COUNTY) {
-                    // 如果所选为县级，找到对应县的天气Id并带值跳转
+                    // 如果所选为县级，找到对应天气信息进行处理
                     String weatherId = countyList.get(position).getWeatherId();
-                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
-                    intent.putExtra("weather_id", weatherId);
-                    startActivity(intent);
-                    // 关闭当前activity
-                    getActivity().finish();
+                    if (getActivity() instanceof MainActivity) {
+                        // 如果当前Activity是MainActivity则进行跳转
+                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                        intent.putExtra("weather_id", weatherId);
+                        startActivity(intent);
+                        // 关闭当前activity
+                        getActivity().finish();
+                    } else if (getActivity() instanceof WeatherActivity) {
+                        // 如果当前Activity是WeatherActivity则进行刷新
+                        WeatherActivity activity = (WeatherActivity) getActivity();
+                        activity.drawerLayout.closeDrawers();
+                        // 启动刷新
+                        activity.swipeRefreshLayout.setRefreshing(true);
+                        activity.requestWeather(weatherId);
+                    }
                 }
             }
         });
